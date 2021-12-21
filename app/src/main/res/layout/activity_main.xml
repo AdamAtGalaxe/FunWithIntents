@@ -73,4 +73,13 @@
         android:onClick="date"
         android:contentDescription="It's a party!"/>
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="36dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="-16dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
