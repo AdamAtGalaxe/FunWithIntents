@@ -1,16 +1,18 @@
 package com.galaxe.funwithintents
 
-import android.app.DownloadManager
+import android.animation.AnimatorInflater
+import android.animation.AnimatorSet
+import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.ProgressBar
+import android.widget.FrameLayout
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -19,12 +21,47 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
     lateinit var context: Context
-    lateinit var progressBar : ProgressBar
+    lateinit var myFrag : Fragment
+    lateinit var front : FrameLayout
+    lateinit var back : FrameLayout
+    lateinit var front_anim : AnimatorSet
+    lateinit var back_anim : AnimatorSet
+    var isFront = true
+
+    @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         context = this
-        progressBar = findViewById(R.id.progressBar)
+
+        front = findViewById(R.id.frontFragment)
+        back = findViewById(R.id.backFragment)
+        var scale = applicationContext.resources.displayMetrics.density
+        supportFragmentManager.beginTransaction().apply{
+            //setCustomAnimations(R.anim.card_flip_left_in, R.anim.card_flip_left_out)
+            replace(R.id.frontFragment, AnimationFrag1(), "blue")
+            replace(R.id.backFragment, AnimationFrag2(), "white")
+            addToBackStack(null)
+            commit()
+        }
+
+        front.cameraDistance = 8000 * scale
+        back.cameraDistance = 8000 * scale
+
+        front_anim = AnimatorInflater.loadAnimator(applicationContext, R.anim.card_flip_left_in) as AnimatorSet
+        back_anim = AnimatorInflater.loadAnimator(applicationContext, R.anim.card_flip_left_out) as AnimatorSet
+
+        //progressBar = findViewById(R.id.progressBar)
+//        supportFragmentManager.beginTransaction().apply{
+//            setCustomAnimations(R.anim.card_flip_left_in, R.anim.card_flip_left_out)
+//            replace(R.id.flFragment, blueFrag, "blue")
+//            addToBackStack(null)
+//            commit()
+//        }
+
+
+
+
     }
     fun call(v: View){
         val dialIntent = Intent(Intent.ACTION_DIAL)
@@ -110,4 +147,44 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    fun changeFrag(v: View){
+
+        if(isFront)
+        {
+            front_anim.setTarget(front);
+            back_anim.setTarget(back);
+            front_anim.start()
+            back_anim.start()
+            isFront = false
+
+        }
+        else
+        {
+            front_anim.setTarget(back)
+            back_anim.setTarget(front)
+            back_anim.start()
+            front_anim.start()
+            isFront =true
+
+        }
+
+//            var myFragment = supportFragmentManager.findFragmentByTag("blue")
+//        if (myFragment != null && myFragment.isVisible()) {
+//            supportFragmentManager.beginTransaction().apply{
+//                setCustomAnimations(R.anim.card_flip_left_in, R.anim.card_flip_left_out)
+//                replace(R.id.flFragment, whiteFrag, "white")
+//                addToBackStack(null)
+//                commit()
+//            }
+//
+//        }
+//        else{
+//            supportFragmentManager.beginTransaction().apply{
+//                setCustomAnimations(R.anim.card_flip_left_in, R.anim.card_flip_left_out)
+//                replace(R.id.flFragment, blueFrag, "blue")
+//                addToBackStack(null)
+//                commit()
+//            }
+//        }
+    }
 }
